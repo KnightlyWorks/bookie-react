@@ -10,6 +10,10 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 
+// @ts-ignore
+import HeaderImport from "@components/layout/Header";
+const Header = HeaderImport as any;
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -32,7 +36,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="max-w-7xl mx-auto">
+        <Header>Some Children for now </Header>
         {children}
         <ScrollRestoration />
         <Scripts />
