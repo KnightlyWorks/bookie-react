@@ -1,9 +1,11 @@
 import AdvancedSeacrhSettings from "@components/advancedSeacrhSettings";
-import SearchField from "@/components/widgets/search";
-import { cn } from "@/utils/cn";
+import SearchField from "@components/widgets/search";
+import { cn } from "@utils/cn";
 
 import { useState } from "react";
-import useBookSearch from "@hooks/useBookSearch.js"; 
+
+//context
+import { useSearch } from "@context/SearchContext";
 
 import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 import BookPreviewCard from "@components/bookPreviewCard";
@@ -11,19 +13,20 @@ import BookPreviewCard from "@components/bookPreviewCard";
 
 
 
+
 export default function SearchPage () {
     const [isAdvancedMenuOpen, setAdvancedMenu] = useState(false);
-    
-    const [query, setQuery] = useState('');
 
     const { 
+        query,
+        setQuery,
         data, 
         isLoading, 
         error, 
         triggerSearch,
         langRestrict,
         setLangRestrict 
-    } = useBookSearch(query);
+    } = useSearch();
 
     return (
         <div className={cn(
@@ -43,12 +46,14 @@ export default function SearchPage () {
                 </div>
 
                 <div className="mt-10 w-full">
-                    {isLoading && <p className="animate-pulse text-primary">Searching...</p>}
+
+                    {isLoading && <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 overflow-x-hidden *:aspect-3/4 *:bg-surface/40 *:border *:border-border *:rounded-xl *:animate-pulse *:shadow-xl">
+                        <div></div><div></div><div></div><div></div> {/*styled by parent. Placeholder cards while loading */}
+                    </div>}
                     {error && <p className="text-error">Error: {error}</p>}
                     
-                    {/* Temporary preview */}
                     {!isLoading && data && (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-x-hidden">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 overflow-x-hidden">
                             {data.items?.map(book => (
                                 <BookPreviewCard key={book.id} bookData={book} />
                             ))}

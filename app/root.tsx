@@ -12,6 +12,7 @@ import "./app.css";
 
 // @ts-ignore
 import HeaderImport from "@components/layout/Header";
+import { SearchProvider } from "./context/SearchContext";
 const Header = HeaderImport as any;
 
 export const links: Route.LinksFunction = () => [
@@ -37,7 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="max-w-7xl mx-auto">
-        <Header>Some Children for now </Header>
+        <Header />
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -47,8 +48,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return <SearchProvider> <Outlet /> </SearchProvider>;
 }
+
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = "Oops!";

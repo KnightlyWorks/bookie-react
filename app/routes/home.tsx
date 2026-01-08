@@ -1,16 +1,22 @@
-import { useEffect, useState } from "react";
 import SearchField from "@/components/widgets/search";
-import useDebounce from '@hooks/useDebounce.js'
+import { useSearch } from "~/context/SearchContext";
+import { useNavigate } from "react-router";
+
 
 export default function Home() {
-  const [query, setQuery] = useState("");
 
-  const debouncedQuery = useDebounce(query, 300) // debounce... just trying not to kill API.
+  const { 
+    query,
+    setQuery,
+    triggerSearch,
+  } = useSearch();
 
-  useEffect(() => {
-    if (!debouncedQuery) return;
-    console.log("SEARCH:", debouncedQuery); //placeholder.
-  }, [debouncedQuery]);
+  //handlers
+  const navigate = useNavigate();
+  const searchAndNavigate = async () => {
+    triggerSearch()
+    navigate("/search");
+  }
 
   return (
     <main className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] px-4 py-16">
@@ -23,7 +29,11 @@ export default function Home() {
         </p>
       </div>
       <div className="md:min-w-2xl">
-        <SearchField query={query} onChange={setQuery} />
+          <SearchField 
+            query={query} 
+            onChange={setQuery} 
+            onSearch={searchAndNavigate} 
+          />
       </div>
     </main>
   );
