@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import SearchField from "@components/search";
+import SearchField from "@/components/widgets/search";
 import useDebounce from '@hooks/useDebounce.js'
 
 export default function Home() {
@@ -22,8 +22,9 @@ export default function Home() {
           Search through millions of books with LuminaBookie.
         </p>
       </div>
-
-      <SearchField query={query} onChange={setQuery} />
+      <div className="md:min-w-2xl">
+        <SearchField query={query} onChange={setQuery} />
+      </div>
     </main>
   );
 }
