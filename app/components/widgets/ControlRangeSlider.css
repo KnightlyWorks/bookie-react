@@ -1,0 +1,40 @@
+/*ControlRangeSlider.css. TAILWIND V4 ONLY*/
+@reference "../../app.css";
+
+@layer components {
+  .range-input {
+    @apply w-full appearance-none bg-transparent cursor-pointer outline-none;
+  }
+
+  /* track */
+  .range-input::-webkit-slider-runnable-track {
+    @apply h-1.5 bg-border rounded-full transition-colors;
+  }
+  
+  .range-input:hover::-webkit-slider-runnable-track {
+    @apply bg-border-hover;
+  }
+
+  /* Chromium i */
+  .range-input::-webkit-slider-thumb {
+    @apply appearance-none h-4 w-4 rounded-full bg-primary border-2 border-background shadow-sm transition-all;
+    margin-top: -6px;
+  }
+
+  .range-input:active::-webkit-slider-thumb {
+    @apply scale-125 bg-primary-hover;
+  }
+
+  .range-input:hover::-webkit-slider-thumb {
+    @apply bg-primary-hover;
+  }
+
+  /*Firefox */
+  .range-input::-moz-range-thumb {
+    @apply h-4 w-4 rounded-full bg-primary border-none shadow-sm transition-all cursor-pointer;
+  }
+  
+  .range-input::-moz-range-track {
+    @apply h-1.5 bg-border rounded-full transition-colors;
+  }
+}

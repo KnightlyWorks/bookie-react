@@ -9,6 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import.meta.glob("/components/**/*.css", { eager: true });
 
 // @ts-ignore
 import HeaderImport from "@components/layout/Header";

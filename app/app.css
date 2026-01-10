@@ -1,9 +1,6 @@
 @import "tailwindcss";
 
 
-
-@import "tailwindcss";
-
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -33,7 +30,6 @@
   --color-success: #48BB78;        /* Success states */
   --color-error: #F56565;          /* Error alerts */
 }
-
 
 html,
 body {

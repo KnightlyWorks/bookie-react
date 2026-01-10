@@ -20,12 +20,13 @@ export default function SearchPage () {
     const { 
         query,
         setQuery,
-        data, 
-        isLoading, 
-        error, 
+        data,
+        isLoading,
+        error,
         triggerSearch,
-        langRestrict,
-        setLangRestrict 
+        settings,
+        updateSetting,
+        resetSettings
     } = useSearch();
 
     return (
@@ -89,8 +90,8 @@ export default function SearchPage () {
             
             <div id="advanced-settings-menu" className="overflow-hidden border-2 border-border bg-surface">
                 <AdvancedSeacrhSettings 
-                    currentLang={langRestrict} 
-                    onLangChange={setLangRestrict} 
+                    updateSetting={updateSetting}
+                    settings={settings}
                 />
             </div>
         </div>
