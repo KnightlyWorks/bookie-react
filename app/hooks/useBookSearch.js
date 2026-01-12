@@ -27,17 +27,13 @@ export default function useBookSearch(externalQuery) {
 
     const resetSettings = () => setSettings(DEFAULT_SEARCH_SETTINGS)
 
-const triggerSearch = async (append = false) => {
+    const triggerSearch = async (append = false) => {
         if (!externalQuery) return;
 
         setIsLoading(true);
         setError(null);
 
-        console.log(data)
         const startIdx = append ? data?.reduce((sum, page) => sum + (page.items?.length || 0), 0) ?? 0 : 0
-        if(!append) {
-            setData([])
-        }
         
         try {
             const params = createSearchParams({
