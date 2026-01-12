@@ -2,17 +2,16 @@ import { useEffect, useState, useCallback } from "react";
 import { createSearchParams } from "react-router"; 
 import { DEFAULT_SEARCH_SETTINGS } from "@/constants/constants.js";
 
-
-
 const API_URL = import.meta.env.VITE_BOOKS_API_URL;
+const isGoogleAPI = true // for feature  config systems for multiple APIs
+
 
 export default function useBookSearch(externalQuery) {
     const [data, setData] = useState(null);
+
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-
-    const [searchIndex, setSearchIndex] = useState(0);
     const [settings, setSettings] = useState(DEFAULT_SEARCH_SETTINGS);
 
     //closure. Returns function that remember initial key.
@@ -28,37 +27,42 @@ export default function useBookSearch(externalQuery) {
 
     const resetSettings = () => setSettings(DEFAULT_SEARCH_SETTINGS)
 
-    const triggerSearch = () => setSearchIndex(prev => prev + 1);
-
-    useEffect(() => {
+const triggerSearch = async (append = false) => {
         if (!externalQuery) return;
 
-        const controller = new AbortController();
+        setIsLoading(true);
+        setError(null);
 
-        const fetchData = async () => {
-            setIsLoading(true);
-            setError(null);
-
-            const urlParams = createSearchParams({
+        console.log(data)
+        const startIdx = append ? data?.reduce((sum, page) => sum + (page.items?.length || 0), 0) ?? 0 : 0
+        if(!append) {
+            setData([])
+        }
+        
+        try {
+            const params = createSearchParams({
                 q: externalQuery,
                 ...settings,
+                startIndex: (startIdx || 0)
             });
 
-            try {
-                const response = await fetch(`${API_URL}?${urlParams}`);
-                if (!response.ok) throw new Error(`Status: ${response.status}`);
-                const result = await response.json();
-                setData(result);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+            const res = await fetch(`${API_URL}?${params}`);
+            if (!res.ok) throw new Error('Search failed');
+            const result = await res.json();
 
-        fetchData();
-        return () => controller.abort();
-    }, [searchIndex]);
+            setData(prev => {
+                if (!append) return [result];
+                return [...(prev ?? []), result];
+            });
+
+        } catch (e) {
+            setError(e.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
 
     return {
         data,

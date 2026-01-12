@@ -3,8 +3,11 @@ import ControlRangeSlider from "./widgets/ControlRangeSlider";
 import FieldSetGroup from "./widgets/FieldSetGroup";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import RadioButtonsPanel from "./widgets/RadioButtonsPanel";
+import ControlSelect from "./widgets/ControlSelect";
 
-const langNames = new Intl.DisplayNames(['ru'], { type: 'language' });
+
+
+const langNames = new Intl.DisplayNames(['en'], { type: 'language' });
 
 export default function AdvancedSearch({ updateSetting, settings }) {
     const setMaxResults = updateSetting('maxResults'); 
@@ -25,25 +28,24 @@ export default function AdvancedSearch({ updateSetting, settings }) {
                         labelText={'Max Batch Size'} 
                     />
 
-                    <div className="flex flex-col gap-2 text-left">
-                        <label className="text-text-primary text-sm font-bold uppercase tracking-tight">
-                            Language Filter
-                        </label>
-                        <div className="relative bg-background text-primary font-mono text-sm border-2 border-border rounded-sm cursor-pointer focus:border-primary outline-none transition-all hover:bg-surface-hover">
-                            <select 
-                                value={currentLang}
-                                onChange={(e) => setLang(e.target.value)}
-                                className="w-full appearance-none inset-0 p-2"
-                            >
-                                {SUPPORTED_LANGUAGES.map(code => (
-                                    <option key={code} value={code} className="bg-surface">
-                                        {langNames.of(code).toUpperCase()} ({code.toUpperCase()})
-                                    </option>
-                                ))}
-                            </select>
-                                <ChevronDownIcon className="size-6 absolute right-2 top-1/2 -translate-y-1/2 select-none pointer-events-none" />
-                        </div>
-                    </div>
+                    <ControlSelect 
+                        labelText="Language Filter"
+                        value={settings?.langRestrict || 'en'}
+                        options={SUPPORTED_LANGUAGES}
+                        onChange={updateSetting('langRestrict')}
+                        formatDisplay={(code) => langNames.of(code)}
+                    />
+
+                    <RadioButtonsPanel 
+                        groupName="Print Type"
+                        currentValue={settings.printType}
+                        setterFunction={updateSetting('printType')}
+                        arrayOButtons={[
+                            { label: 'All', value: 'all' },
+                            { label: 'Books only', value: 'books' },
+                            { label: 'Magazines only', value: 'magazines' }
+                        ]} 
+                    />
 
                     <RadioButtonsPanel 
                         groupName="Sort By"
@@ -53,8 +55,8 @@ export default function AdvancedSearch({ updateSetting, settings }) {
                             { label: 'Relevance', value: 'relevance' },
                             { label: 'Newest', value: 'newest' }
                         ]} 
-                    />{/*After adding more APIs will be in configs. Hardcode for now :/ */}
-
+                    />{/*After adding more APIs will be in configs. Hardcode components for now.  :/ */}
+                    <p className="text-text-muted text-xs italic text-balance tracking-wider font-mono opacity-90">*    Filters apply only to new queries and do not affect existing results. </p>
                 </div>
             </FieldSetGroup >
         </aside>
