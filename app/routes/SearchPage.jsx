@@ -10,12 +10,12 @@ import { useSearch } from "@context/SearchContext";
 
 // Components
 import SearchField from "@components/widgets/search";
-import AdvancedSearchSettings from "~/components/advancedSearchSettings";
+import AdvancedSearchSettings from "@/components/advancedSearchSettings.jsx";
 import BookPreviewCard from "@components/bookPreviewCard";
 
 // Utils & Constants
 import { cn } from "@utils/cn";
-import { tailwindBreakpoints } from "~/constants/tailwindBreakpoints";
+import { tailwindBreakpoints } from "@/constants/tailwindBreakpoints";
 
 const BooksGrid = ({ rowVirtualizer, allBooks, columns }) => {
     const virtualItems = rowVirtualizer.getVirtualItems();
