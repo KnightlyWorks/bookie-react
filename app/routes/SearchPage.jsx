@@ -17,6 +17,8 @@ import BookPreviewCard from "@components/bookPreviewCard";
 import { cn } from "@utils/cn";
 import { tailwindBreakpoints } from "@/constants/tailwindBreakpoints";
 
+
+
 const BooksGrid = ({ rowVirtualizer, allBooks, columns }) => {
     const virtualItems = rowVirtualizer.getVirtualItems();
     const totalSize = rowVirtualizer.getTotalSize();
@@ -73,12 +75,17 @@ const LoadingState = ({ columns }) => {
 
 const ScrollToTopBtn = ({ onClick }) => {
     return (
-        <button
-            onClick={onClick}
-            className="fixed bottom-23 md:bottom-8 right-0 md:right-8 z-50 btn-primary rounded-full p-4 shadow-2xl hover:scale-110 transition-transform"
-        >
-            ↑
-        </button>
+        <div className="fixed inset-x-0 bottom-0 pointer-events-none z-50">
+            <div className="max-w-7xl mx-auto relative h-full">
+                <button
+                    onClick={onClick}
+                    className="
+                        pointer-events-auto absolute bottom-10 md:bottom-8 right-2 btn-primary rounded-full p-4 shadow-2xl hover:scale-110 transition-transform"
+                >
+                    <ArrowUpIcon className="w-6"/>
+                </button>
+            </div>
+        </div>
     );
 };
 

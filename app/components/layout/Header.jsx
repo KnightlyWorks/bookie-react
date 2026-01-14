@@ -101,14 +101,14 @@ function NavLinks({ onLinkClick, mobile = false }) {
       </Link>
       
       <Link 
-        to="/about" 
+        to="/favorite" 
         onClick={onLinkClick} 
         className={cn(
           linkBase,
           mobile ? "text-2xl text-text-primary" : "text-text-secondary"
         )}
       >
-        About
+        Favorites
       </Link>
     </nav>
   );

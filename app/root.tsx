@@ -14,6 +14,7 @@ import.meta.glob("/components/**/*.css", { eager: true });
 // @ts-ignore
 import HeaderImport from "@components/layout/Header";
 import { SearchProvider } from "./context/SearchContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
 const Header = HeaderImport as any;
 
 export const links: Route.LinksFunction = () => [
@@ -49,7 +50,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <SearchProvider> <Outlet /> </SearchProvider>;
+  return (
+    <SearchProvider>
+      <FavoritesProvider>
+        <Outlet /> 
+      </FavoritesProvider>
+    </SearchProvider>
+  )
 }
 
 
