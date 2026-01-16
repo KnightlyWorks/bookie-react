@@ -10,7 +10,7 @@ import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
 // Utils
 import { cn } from "@utils/cn";
 
-export default function BookPreviewCard({ bookData }) {
+export default function BookCard({ bookData }) {
   const { toggleFavorite, isFavorite } = useFavorites();
   const favorite = isFavorite(bookData.id);
 

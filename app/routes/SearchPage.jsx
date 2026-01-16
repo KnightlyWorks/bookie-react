@@ -1,10 +1,8 @@
 //SearchPage.jsx
-import { useEffect, useState, useRef, useMemo } from "react";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { useMediaQuery } from "react-responsive";
+import { useState, useRef, useMemo } from "react";
 
 // Icons
-import { Cog8ToothIcon, ArrowUpIcon } from "@heroicons/react/24/outline";
+import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 
 // Context
 import { useSearch } from "@context/SearchContext";
@@ -12,75 +10,12 @@ import { useSearch } from "@context/SearchContext";
 // Components
 import SearchField from "@components/ui/Forms/SearchField/SearchField";
 import AdvancedSearchSettings from "@components/advancedSearchSettings";
-import BookPreviewCard from "@components/widgets/BookPreviewCard";
 
 // Utils & Constants
 import { cn } from "@utils/cn";
-import { tailwindBreakpoints } from "@constants/tailwindBreakpoints";
 
-const BooksGrid = ({ rowVirtualizer, allBooks, columns }) => {
-  const virtualItems = rowVirtualizer.getVirtualItems();
-  const totalSize = rowVirtualizer.getTotalSize();
-
-  return (
-    <div className="relative w-full" style={{ height: `${totalSize}px` }}>
-      {virtualItems.map((virtualRow) => (
-        <div
-          key={virtualRow.key}
-          style={{
-            transform: `translateY(${virtualRow.start}px)`,
-            height: `${virtualRow.size}px`,
-          }}
-          className="absolute top-0 left-0 grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4"
-        >
-          {Array.from({ length: columns }).map((_, i) => {
-            const book = allBooks[virtualRow.index * columns + i];
-            return book ? (
-              <BookPreviewCard key={book.id} bookData={book} />
-            ) : (
-              <div key={`empty-${i}`} className="hidden md:block" />
-            );
-          })}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const EmptyState = () => (
-  <div className="flex h-full flex-col items-center justify-center py-20 text-center">
-    <h2 className="text-primary mb-4 text-4xl font-bold">Nothing Here Yet</h2>
-    <p className="text-text-secondary text-xl">Books will appear here once you search</p>
-  </div>
-); // /*TODO: add more style here. Maybe image or something */
-
-const LoadingState = ({ columns }) => {
-  return (
-    <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {[...Array(columns * 2)].map((_, i) => (
-        <div
-          key={`${i}-skeleton-card-on-search-page`}
-          className="bg-surface/40 border-border aspect-3/4 animate-pulse rounded-xl border shadow-xl"
-        />
-      ))}
-    </div>
-  );
-};
-
-const ScrollToTopBtn = ({ onClick }) => {
-  return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50">
-      <div className="relative mx-auto h-full max-w-7xl">
-        <button
-          onClick={onClick}
-          className="btn-primary pointer-events-auto absolute right-2 bottom-10 rounded-full p-4 shadow-2xl transition-transform hover:scale-110 md:bottom-8"
-        >
-          <ArrowUpIcon className="w-6" />
-        </button>
-      </div>
-    </div>
-  );
-};
+import { BooksGrid, EmptyState, LoadingState, ScrollToTopBtn } from "@components/book/BookStates";
+import { useBookGridVirtualizer } from "@hooks/useBookGridVirtualizer";
 
 export default function SearchPage() {
   const [isAdvancedMenuOpen, setAdvancedMenu] = useState(false);
@@ -93,16 +28,13 @@ export default function SearchPage() {
     if (!data) return [];
     return data.flatMap((d) => d?.items ?? []);
   }, [data]);
-  const isMobile = useMediaQuery({ maxWidth: tailwindBreakpoints.md - 1 });
-  const isTablet = useMediaQuery({ maxWidth: tailwindBreakpoints.lg - 1 });
-  const columns = isMobile ? 1 : isTablet ? 2 : 4;
 
-  const rowVirtualizer = useVirtualizer({
-    count: Math.ceil(allBooks.length / columns),
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 400,
-    overscan: 2,
+  const { rowVirtualizer, columns } = useBookGridVirtualizer({
+    items: allBooks,
+    parentRef,
   });
+
+  const isMobile = columns === 1;
 
   const scrollOffset = rowVirtualizer.scrollOffset;
   const showScrollTop = scrollOffset > 300;
