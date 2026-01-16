@@ -1,79 +1,79 @@
 @import "tailwindcss";
 
-
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
 
   /* Core Palette */
-  --color-primary: #4A90E2;        /* Main accent */
-  --color-primary-hover: #357ABD;  /* Active state */
-  --color-secondary: #2C5282;      /* Secondary branding */
+  --color-primary: #4a90e2; /* Main accent */
+  --color-primary-hover: #357abd; /* Active state */
+  --color-secondary: #2c5282; /* Secondary branding */
   --color-secondary-hover: #1e3a5f;
-  
+
   /* Surfaces & Backgrounds */
-  --color-background: #FFFFFF;     /* App background */
-  --color-surface: #F7FAFC;        /* Card & element background */
-  --color-surface-hover: #EDF2F7;  
-  
+  --color-background: #ffffff; /* App background */
+  --color-surface: #f7fafc; /* Card & element background */
+  --color-surface-hover: #edf2f7;
+
   /* Typography */
-  --color-text-primary: #1A202C;   /* Main headings/body */
+  --color-text-primary: #1a202c; /* Main headings/body */
   --color-text-secondary: #718096; /* Descriptions */
-  --color-text-muted: #A0AEC0;     /* Meta & placeholders */
-  
+  --color-text-muted: #a0aec0; /* Meta & placeholders */
+
   /* Borders */
-  --color-border: #E2E8F0;         /* Default outlines */
-  --color-border-hover: #CBD5E0;   
-  
+  --color-border: #e2e8f0; /* Default outlines */
+  --color-border-hover: #cbd5e0;
+
   /* Feedback & Accents */
-  --color-accent: #4299E1;         /* Focus & call-to-action */
-  --color-success: #48BB78;        /* Success states */
-  --color-error: #F56565;          /* Error alerts */
+  --color-accent: #4299e1; /* Focus & call-to-action */
+  --color-success: #48bb78; /* Success states */
+  --color-error: #f56565; /* Error alerts */
 }
 
 html,
 body {
   @apply bg-background text-text-primary;
-  @apply antialiased text-balance;
+  @apply text-balance antialiased;
 }
 
- .container-app {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+.container-app {
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
 }
 
- .card {
-  @apply bg-surface border border-border rounded-lg p-6;
+.card {
+  @apply bg-surface border-border rounded-lg border p-6;
   @apply hover:border-border-hover transition-colors;
 }
 
- .btn-primary {
-  @apply bg-primary text-white px-4 md:px-6 py-3 rounded-lg font-medium;
+.btn-primary {
+  @apply bg-primary rounded-lg px-4 py-3 font-medium text-white md:px-6;
   @apply hover:bg-primary-hover transition-colors;
-  @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  @apply focus:ring-primary focus:ring-2 focus:ring-offset-2 focus:outline-none;
 }
 
- .btn-secondary {
-  @apply bg-secondary text-white px-4 md:px-6 py-3 rounded-lg font-medium;
+.btn-secondary {
+  @apply bg-secondary rounded-lg px-4 py-3 font-medium text-white md:px-6;
   @apply hover:bg-secondary-hover transition-colors;
 }
 
- .link {
+.link {
   @apply text-primary hover:text-primary-hover underline-offset-4 hover:underline;
 }
 
 /* typography */
- .text-muted {
+.text-muted {
   @apply text-text-secondary;
 }
 
-  .heading-1 {
-  @apply text-4xl sm:text-5xl font-bold text-text-primary;
+.heading-1 {
+  @apply text-text-primary text-4xl font-bold sm:text-5xl;
 }
 
- .heading-2 {
-  @apply text-3xl sm:text-4xl font-bold text-text-primary;
+.heading-2 {
+  @apply text-text-primary text-3xl font-bold sm:text-4xl;
 }
 
- .heading-3 {
-  @apply text-2xl sm:text-3xl font-semibold text-text-primary;
+.heading-3 {
+  @apply text-text-primary text-2xl font-semibold sm:text-3xl;
 }

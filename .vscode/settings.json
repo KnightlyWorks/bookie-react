@@ -1,0 +1,10 @@
+{
+  "path-intellisense.mappings": {
+    "@": "${workspaceRoot}/app",
+    "@components": "${workspaceRoot}/app/components",
+    "@hooks": "${workspaceRoot}/app/hooks",
+    "@utils": "${workspaceRoot}/app/utils",
+    "@context": "${workspaceRoot}/app/context",
+    "@constants": "${workspaceRoot}/app/constants"
+  }
+}

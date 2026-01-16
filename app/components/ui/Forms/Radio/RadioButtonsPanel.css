@@ -1,0 +1,17 @@
+/*ControlRadioButton.css. TAILWIND V4 ONLY*/
+@reference "../../../../app.css";
+
+@layer components {
+  .radio-input {
+    @apply border-border bg-background checked:border-primary checked:bg-primary/20 relative h-4 w-4 cursor-pointer appearance-none rounded-full border-2 transition-all;
+  }
+
+  .radio-input:checked::after {
+    content: "";
+    @apply bg-primary absolute inset-1 rounded-full;
+  }
+
+  .radio-input:hover {
+    @apply border-primary-hover shadow-[0_0_8px_rgba(var(--color-primary),0.3)];
+  }
+}

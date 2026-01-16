@@ -1,13 +1,13 @@
 // context/FavoritesContext.jsx
-import { createContext, useContext, useState, useEffect } from 'react';
-import useDebounce from '~/hooks/useDebounce';
+import { createContext, useContext, useState, useEffect } from "react";
+import useDebounce from "@hooks/useDebounce";
 
 const FavoritesContext = createContext();
 
 export function FavoritesProvider({ children }) {
-const [favorites, setFavorites] = useState({});
+  const [favorites, setFavorites] = useState({});
   useEffect(() => {
-    const saved = localStorage.getItem('favorites');
+    const saved = localStorage.getItem("favorites");
     if (saved) {
       try {
         setFavorites(JSON.parse(saved));
@@ -21,22 +21,22 @@ const [favorites, setFavorites] = useState({});
 
   useEffect(() => {
     if (Object.keys(debouncedFavorites).length === 0) {
-        const checkExisting = localStorage.getItem('favorites');
-        if (checkExisting && checkExisting !== '{}') return;
+      const checkExisting = localStorage.getItem("favorites");
+      if (checkExisting && checkExisting !== "{}") return;
     }
-    
-    localStorage.setItem('favorites', JSON.stringify(debouncedFavorites));
+
+    localStorage.setItem("favorites", JSON.stringify(debouncedFavorites));
   }, [debouncedFavorites]);
 
   const addFavorite = (book) => {
-    setFavorites(prev => ({
+    setFavorites((prev) => ({
       ...prev,
-      [book.id]: book
+      [book.id]: book,
     }));
   };
 
   const removeFavorite = (bookId) => {
-    setFavorites(prev => {
+    setFavorites((prev) => {
       const newFavorites = { ...prev };
       delete newFavorites[bookId];
       return newFavorites;
@@ -56,22 +56,23 @@ const [favorites, setFavorites] = useState({});
   const favoritesList = Object.values(favorites);
 
   const clearFavorite = () => {
-    setFavorites({})
-  }
+    setFavorites({});
+  };
 
   return (
-    <FavoritesContext.Provider value={{ 
-      favorites: favoritesList,
-      favoritesMap: favorites,
-      toggleFavorite,
-      isFavorite,
-      clearFavorite,
-      count: favoritesList.length
-    }}>
+    <FavoritesContext.Provider
+      value={{
+        favorites: favoritesList,
+        favoritesMap: favorites,
+        toggleFavorite,
+        isFavorite,
+        clearFavorite,
+        count: favoritesList.length,
+      }}
+    >
       {children}
     </FavoritesContext.Provider>
   );
 }
 
 export const useFavorites = () => useContext(FavoritesContext);
-

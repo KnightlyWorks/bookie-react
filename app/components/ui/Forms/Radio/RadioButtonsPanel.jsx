@@ -1,24 +1,22 @@
+//RadioButtonsPanel.jsx
 import idFromName from "@utils/idFromName";
-import "./ControlRadioButton.css";
+import "./RadioButtonsPanel.css";
 
-export default function RadioButtonsPanel({ 
-  setterFunction, 
-  currentValue, 
-  groupName, 
-  arrayOButtons = [{ label: '', value: null }] 
+export default function RadioButtonsPanel({
+  setterFunction,
+  currentValue,
+  groupName,
+  arrayOButtons = [{ label: "", value: null }],
 }) {
-  const groupNameClean = groupName.replace(/\s+/g, '');
-  
+  const groupNameClean = groupName.replace(/\s+/g, "");
+
   return (
     <div className="flex flex-col gap-3 py-2">
+      <h3 className="text-text-primary text-sm font-bold tracking-tight uppercase">{groupName}</h3>
 
-      <h3 className="text-text-primary text-sm font-bold uppercase tracking-tight">
-        {groupName}
-      </h3>
-      
       <div className="flex flex-wrap gap-x-6 gap-y-3">
         {arrayOButtons.map((button, index) => (
-          <RadioButton 
+          <RadioButton
             key={`${groupNameClean}-${index}`}
             name={groupNameClean}
             currentValue={currentValue}
@@ -33,24 +31,23 @@ export default function RadioButtonsPanel({
 }
 
 function RadioButton({ label, setterFunction, valueToSet, currentValue, name }) {
-  const id = `${idFromName(label)}-${name}-radio`; 
+  const id = `${idFromName(label)}-${name}-radio`;
   const isActive = valueToSet == currentValue; // Loose Equality pleease
-  
+
   return (
-    <div className="group flex items-center gap-2 cursor-pointer">
-      <input 
+    <div className="group flex cursor-pointer items-center gap-2">
+      <input
         type="radio"
         id={id}
-        name={name} 
+        name={name}
         value={valueToSet}
         checked={isActive}
         onChange={(e) => setterFunction(e.target.value)}
-        className="radio-input" 
+        className="radio-input"
       />
-      <label 
+      <label
         htmlFor={id}
-        className={`text-xs font-mono font-bold uppercase cursor-pointer select-none transition-colors
-          ${isActive ? 'text-primary' : 'text-text-muted group-hover:text-text-primary'}`}
+        className={`cursor-pointer font-mono text-xs font-bold uppercase transition-colors select-none ${isActive ? "text-primary" : "text-text-muted group-hover:text-text-primary"}`}
       >
         {label ?? valueToSet}
       </label>

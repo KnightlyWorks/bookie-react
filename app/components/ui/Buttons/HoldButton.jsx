@@ -1,5 +1,6 @@
+//HoldButton.jsx
 import { useState, useRef } from "react";
-import { cn } from "@/utils/cn";
+import { cn } from "@utils/cn";
 
 export default function HoldButton({
   onComplete,
@@ -52,37 +53,35 @@ export default function HoldButton({
       onKeyDown={(e) => (e.key === " " || e.key === "Enter") && startHold(e)}
       onKeyUp={(e) => (e.key === " " || e.key === "Enter") && cancelHold()}
       className={cn(
-        "group relative overflow-hidden px-6 py-2 rounded-xl font-medium transition-all duration-200",
-        "bg-surface border border-border text-text-primary",
+        "group relative overflow-hidden rounded-xl px-6 py-2 font-medium transition-all duration-200",
+        "bg-surface border-border text-text-primary border",
         "hover:bg-surface-hover hover:border-primary/30",
-        "active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-primary/40",
-        "select-none cursor-pointer",
+        "focus:ring-primary/40 focus:ring-2 focus:outline-none active:scale-[0.97]",
+        "cursor-pointer select-none",
         className
       )}
     >
       <div
         className={cn(
-          "absolute inset-0 bg-primary/5 pointer-events-none",
+          "bg-primary/5 pointer-events-none absolute inset-0",
           "transition-all ease-out"
         )}
-        style={{ 
+        style={{
           width: isHolding ? "100%" : "0%",
           transitionDuration: isHolding ? `${duration}ms` : "300ms",
-          transitionTimingFunction: isHolding ? "linear" : "ease-out"
+          transitionTimingFunction: isHolding ? "linear" : "ease-out",
         }}
       />
       <div
-        className="absolute bottom-0 left-0 h-[3px] bg-primary/60 shadow-[0_-2px_8px_rgba(var(--color-primary),0.3)]"
-        style={{ 
+        className="bg-primary/60 absolute bottom-0 left-0 h-[3px] shadow-[0_-2px_8px_rgba(var(--color-primary),0.3)]"
+        style={{
           width: isHolding ? "100%" : "0%",
           transitionDuration: isHolding ? `${duration}ms` : "300ms",
-          transitionTimingFunction: isHolding ? "linear" : "ease-out"
+          transitionTimingFunction: isHolding ? "linear" : "ease-out",
         }}
       />
 
-      <span className="relative z-10 flex items-center justify-center gap-2">
-        {children}
-      </span>
+      <span className="relative z-10 flex items-center justify-center gap-2">{children}</span>
     </button>
   );
 }

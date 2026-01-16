@@ -1,28 +1,28 @@
 /*ControlRangeSlider.css. TAILWIND V4 ONLY*/
-@reference "../../app.css";
+@reference "../../../app.css";
 
 @layer components {
   .range-input {
-    @apply w-full appearance-none bg-transparent cursor-pointer outline-none;
+    @apply w-full cursor-pointer appearance-none bg-transparent outline-none;
   }
 
   /* track */
   .range-input::-webkit-slider-runnable-track {
-    @apply h-1.5 bg-border rounded-full transition-colors;
+    @apply bg-border h-1.5 rounded-full transition-colors;
   }
-  
+
   .range-input:hover::-webkit-slider-runnable-track {
     @apply bg-border-hover;
   }
 
   /* Chromium i */
   .range-input::-webkit-slider-thumb {
-    @apply appearance-none h-4 w-4 rounded-full bg-primary border-2 border-background shadow-sm transition-all;
+    @apply bg-primary border-background h-4 w-4 appearance-none rounded-full border-2 shadow-sm transition-all;
     margin-top: -6px;
   }
 
   .range-input:active::-webkit-slider-thumb {
-    @apply scale-125 bg-primary-hover;
+    @apply bg-primary-hover scale-125;
   }
 
   .range-input:hover::-webkit-slider-thumb {
@@ -31,10 +31,10 @@
 
   /*Firefox */
   .range-input::-moz-range-thumb {
-    @apply h-4 w-4 rounded-full bg-primary border-none shadow-sm transition-all cursor-pointer;
+    @apply bg-primary h-4 w-4 cursor-pointer rounded-full border-none shadow-sm transition-all;
   }
-  
+
   .range-input::-moz-range-track {
-    @apply h-1.5 bg-border rounded-full transition-colors;
+    @apply bg-border h-1.5 rounded-full transition-colors;
   }
 }

@@ -1,11 +1,5 @@
 {
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.js",
-    "**/*.jsx",
-    ".react-router/types/**/*"
-  ],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", ".react-router/types/**/*"],
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
@@ -25,12 +19,11 @@
     "baseUrl": ".",
     "rootDirs": [".", "./.react-router/types"],
     "paths": {
-      "~/*": ["./app/*"],
-      "@/*": ["./app/*"],
       "@components/*": ["./app/components/*"],
       "@hooks/*": ["./app/hooks/*"],
       "@utils/*": ["./app/utils/*"],
-      "@context/*": ["./app/context/*"]
+      "@context/*": ["./app/context/*"],
+      "@constants/*": ["./app/constants/*"]
     }
   },
   "exclude": ["node_modules"]
