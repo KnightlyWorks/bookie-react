@@ -23,7 +23,8 @@
       "@hooks/*": ["./app/hooks/*"],
       "@utils/*": ["./app/utils/*"],
       "@context/*": ["./app/context/*"],
-      "@constants/*": ["./app/constants/*"]
+      "@constants/*": ["./app/constants/*"],
+      "@assets/*": ["./app/assets/*"]
     }
   },
   "exclude": ["node_modules"]
