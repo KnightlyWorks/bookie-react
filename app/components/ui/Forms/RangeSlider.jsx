@@ -5,7 +5,7 @@ import useDebounce from "@hooks/useDebounce";
 
 import "./RangeSlider.css";
 
-export default function ControlRangeSlider({ value, onChange, min, max, labelText, step = 1 }) {
+export default function RangeSlider({ value, onChange, min, max, labelText, step = 1 }) {
   const [localValue, setLocalValue] = useState(value);
   const debouncedValue = useDebounce(localValue, 300);
 
