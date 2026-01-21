@@ -62,23 +62,32 @@ export default function SearchPage() {
 
   const allBooks = useMemo(() => pages.flat(), [pages]);
 
-  const debouncedSubmit = useCallback(
-    debounce((query) => {
+  const performSubmit = useCallback(
+    (query) => {
       const params = new URLSearchParams(searchParams);
-      if (query) params.set("q", query);
-      else params.delete("q");
-
+      query ? params.set("q", query) : params.delete("q");
       params.delete("startIndex");
-
       submit(params, { preventScrollReset: true });
-    }, 500),
+    },
     [searchParams, submit]
   );
 
-  const handleSearchChange = (val) => {
-    setLocalQuery(val);
-    debouncedSubmit(val);
-  };
+  const debouncedSubmit = useMemo(() => debounce(performSubmit, 500), [performSubmit]);
+
+  const handleSearchChange = useCallback(
+    (skipDebounce = false) =>
+      (val) => {
+        setLocalQuery(val);
+        debouncedSubmit.cancel();
+
+        if (skipDebounce) {
+          performSubmit(val);
+        } else {
+          debouncedSubmit(val);
+        }
+      },
+    [performSubmit, debouncedSubmit]
+  );
 
   const updateSetting = (key) => (value) => {
     const params = new URLSearchParams(searchParams);
@@ -115,7 +124,11 @@ export default function SearchPage() {
     >
       <main className="flex min-w-0 flex-col gap-10 overflow-hidden p-4 md:p-10">
         <div className="w-full max-w-4xl">
-          <SearchField query={localQuery} onChange={handleSearchChange} />
+          <SearchField
+            query={localQuery}
+            onChange={handleSearchChange(false)}
+            onSearch={handleSearchChange(true)}
+          />
         </div>
 
         <div ref={parentRef} className="h-[calc(100vh-200px)] w-full overflow-auto pr-2">

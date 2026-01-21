@@ -5,7 +5,7 @@ import { cn } from "@utils/cn";
 export default function SearchField({ query, onChange, onSearch }) {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      onSearch();
+      onSearch(query);
     }
   };
 
@@ -27,7 +27,7 @@ export default function SearchField({ query, onChange, onSearch }) {
         />
         <button
           type="button"
-          onClick={onSearch}
+          onClick={() => onSearch(query)}
           className="bg-primary text-background shadow-primary/20 rounded-xl px-6 py-3 font-bold shadow-md transition-opacity hover:opacity-90 active:scale-95"
         >
           Find
