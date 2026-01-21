@@ -1,16 +1,21 @@
 //home.tsx
 import SearchField from "@components/ui/Forms/SearchField/SearchField";
-import { useSearch } from "@context/SearchContext";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 
 export default function Home() {
-  const { query, setQuery, triggerSearch } = useSearch();
+  const [query, setQuery] = useState("");
 
-  //handlers
   const navigate = useNavigate();
-  const searchAndNavigate = async () => {
-    triggerSearch();
-    navigate("/search");
+
+  const handleSearch = () => {
+    if (!query.trim()) return;
+    const params = new URLSearchParams({
+      q: query,
+      orderBy: "relevance",
+      maxResults: "20",
+    });
+    navigate(`/search?${params.toString()}`);
   };
 
   return (
@@ -24,7 +29,7 @@ export default function Home() {
         </p>
       </div>
       <div className="md:min-w-2xl">
-        <SearchField query={query} onChange={setQuery} onSearch={searchAndNavigate} />
+        <SearchField query={query} onChange={setQuery} onSearch={handleSearch} />
       </div>
     </main>
   );

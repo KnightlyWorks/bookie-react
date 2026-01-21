@@ -1,82 +1,143 @@
-//SearchPage.jsx
-import { useState, useRef, useMemo } from "react";
-
-// Icons
+// app/routes/search.jsx
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useFetcher, useLoaderData, useSearchParams, useSubmit } from "react-router";
 import { Cog8ToothIcon } from "@heroicons/react/24/outline";
+import debounce from "lodash.debounce";
 
-// Context
-import { useSearch } from "@context/SearchContext";
-
-// Components
 import SearchField from "@components/ui/Forms/SearchField/SearchField";
 import AdvancedSearchSettings from "@components/advancedSearchSettings";
-
-// Utils & Constants
 import { cn } from "@utils/cn";
-
 import { BooksGrid, EmptyState, LoadingState, ScrollToTopBtn } from "@components/book/BookStates";
 import { useBookGridVirtualizer } from "@hooks/useBookGridVirtualizer";
+import { DEFAULT_SEARCH_SETTINGS } from "@constants/constants";
 
-export default function SearchPage() {
-  const [isAdvancedMenuOpen, setAdvancedMenu] = useState(false);
-  const parentRef = useRef(null);
+const API_URL = import.meta.env.VITE_BOOKS_API_URL;
 
-  const { query, setQuery, data, isLoading, error, triggerSearch, settings, updateSetting } =
-    useSearch();
+export async function loader({ request }) {
+  const url = new URL(request.url);
+  const query = url.searchParams.get("q") || "";
+  const startIndex = url.searchParams.get("startIndex") || "0";
 
-  const allBooks = useMemo(() => {
-    if (!data) return [];
-    return data.flatMap((d) => d?.items ?? []);
-  }, [data]);
+  const settings = { ...DEFAULT_SEARCH_SETTINGS, ...Object.fromEntries(url.searchParams) };
 
-  const { rowVirtualizer, columns } = useBookGridVirtualizer({
-    items: allBooks,
-    parentRef,
+  if (!query) return { books: [], query, settings };
+
+  const googleParams = new URLSearchParams({ q: query, startIndex });
+  Object.entries(settings).forEach(([key, value]) => {
+    if (!["q", "startIndex"].includes(key) && value && value !== "all") {
+      googleParams.append(key, value);
+    }
   });
 
-  const isMobile = columns === 1;
+  try {
+    const res = await fetch(`${API_URL}?${googleParams}`);
+    if (!res.ok) throw new Error(`API Error: ${res.status}`);
+    const data = await res.json();
 
-  const scrollOffset = rowVirtualizer.scrollOffset;
-  const showScrollTop = scrollOffset > 300;
+    return { books: data.items ? [data.items] : [], query, settings };
+  } catch (error) {
+    return { books: [], query, settings, error: error.message };
+  }
+}
+
+export default function SearchPage() {
+  const { books: initialBooks, settings, error: loaderError } = useLoaderData();
+  const [searchParams] = useSearchParams();
+  const fetcher = useFetcher();
+  const submit = useSubmit();
+
+  const [pages, setPages] = useState(initialBooks);
+  const [isAdvancedMenuOpen, setAdvancedMenu] = useState(false);
+  const [localQuery, setLocalQuery] = useState(searchParams.get("q") || "");
+
+  useEffect(() => {
+    setPages(initialBooks);
+  }, [initialBooks]);
+
+  useEffect(() => {
+    if (fetcher.data?.books) {
+      setPages((prev) => [...prev, ...fetcher.data.books]);
+    }
+  }, [fetcher.data]);
+
+  const allBooks = useMemo(() => pages.flat(), [pages]);
+
+  const debouncedSubmit = useCallback(
+    debounce((query) => {
+      const params = new URLSearchParams(searchParams);
+      if (query) params.set("q", query);
+      else params.delete("q");
+
+      params.delete("startIndex");
+
+      submit(params, { preventScrollReset: true });
+    }, 500),
+    [searchParams, submit]
+  );
+
+  const handleSearchChange = (val) => {
+    setLocalQuery(val);
+    debouncedSubmit(val);
+  };
+
+  const updateSetting = (key) => (value) => {
+    const params = new URLSearchParams(searchParams);
+    if (!value || value === "all" || value === DEFAULT_SEARCH_SETTINGS[key]) {
+      params.delete(key);
+    } else {
+      params.set(key, value);
+    }
+    params.delete("startIndex");
+    submit(params, { preventScrollReset: true });
+  };
+
+  const loadMore = () => {
+    if (fetcher.state !== "idle") return;
+    const params = new URLSearchParams(searchParams);
+    params.set("startIndex", allBooks.length.toString());
+    fetcher.load(`?${params.toString()}`);
+  };
+
+  const parentRef = useRef(null);
+  const { rowVirtualizer, columns } = useBookGridVirtualizer({ items: allBooks, parentRef });
+
+  const isLoadingMore = fetcher.state !== "idle";
+  const error = loaderError || fetcher.data?.error;
+  const isMobile = columns === 1;
+  const showScrollTop = rowVirtualizer?.scrollOffset > 300;
 
   return (
     <section
       className={cn(
-        "grid min-h-screen overflow-x-hidden transition-all duration-500 ease-in-out",
-        isAdvancedMenuOpen
-          ? "grid-cols-[0fr_auto_1fr] md:grid-cols-[1fr_auto_350px]"
-          : "grid-cols-[1fr_auto_0px]"
+        "grid min-h-screen transition-all duration-500",
+        isAdvancedMenuOpen ? "grid-cols-[1fr_auto_350px]" : "grid-cols-[1fr_auto_0px]"
       )}
     >
-      {/* LEFT: Main Search Area */}
       <main className="flex min-w-0 flex-col gap-10 overflow-hidden p-4 md:p-10">
         <div className="w-full max-w-4xl">
-          <SearchField query={query} onChange={setQuery} onSearch={() => triggerSearch(false)} />
+          <SearchField query={localQuery} onChange={handleSearchChange} />
         </div>
 
         <div ref={parentRef} className="h-[calc(100vh-200px)] w-full overflow-auto pr-2">
           {error && (
-            <div className="text-error bg-error/10 mb-4 rounded-xl p-4">Error: {error}</div>
+            <div className="bg-error/10 text-error mb-4 rounded-xl p-4">Error: {error}</div>
           )}
 
-          {allBooks.length > 0 ? (
-            <>
-              <BooksGrid rowVirtualizer={rowVirtualizer} allBooks={allBooks} columns={columns} />
-              {!isLoading && (
-                <button
-                  onClick={() => triggerSearch(true)}
-                  disabled={isLoading}
-                  className="btn-primary my-10 w-full disabled:opacity-50"
-                >
-                  {isLoading ? "Loading..." : "Load more"}
-                </button>
-              )}
-            </>
-          ) : (
-            !isLoading && <EmptyState />
+          <BooksGrid rowVirtualizer={rowVirtualizer} allBooks={allBooks} columns={columns} />
+
+          {isLoadingMore && <LoadingState isLoading={isLoadingMore} columns={columns} />}
+
+          {allBooks.length > 0 && (
+            <button
+              onClick={loadMore}
+              disabled={isLoadingMore}
+              className="btn-primary my-10 w-full disabled:opacity-50"
+            >
+              {isLoadingMore ? "Loading..." : "Load more"}
+            </button>
           )}
 
-          {isLoading && <LoadingState isLoading={isLoading} columns={columns} />}
+          {allBooks.length === 0 && searchParams.get("q") && !isLoadingMore && <EmptyState />}
         </div>
       </main>
 
@@ -86,38 +147,38 @@ export default function SearchPage() {
         />
       )}
 
-      {/* RIGHT: Sidebar Controls */}
-      <div className="relative flex flex-col items-center">
-        <div className="bg-border/50 absolute inset-y-0 left-0 w-px" />
-        <button
-          aria-expanded={isAdvancedMenuOpen}
-          aria-controls="advanced-settings-menu"
-          onClick={() => setAdvancedMenu((prev) => !prev)}
-          className={cn(
-            "relative z-10 flex flex-col items-center px-2 pt-4 pb-3",
-            "bg-primary/10 border-primary/20 border-x border-b",
-            "rounded-b-lg shadow-sm transition-all duration-300",
-            "hover:bg-primary/20 hover:border-primary/40 hover:pt-6",
-            "group"
-          )}
-          style={{ width: "42px" }}
-        >
-          <div className="bg-primary/40 absolute top-0 mb-2 h-5 w-1 rounded-b-full transition-all group-hover:h-6" />
-          <Cog8ToothIcon
-            className={cn(
-              "text-primary mt-2 size-6 transition-transform duration-500",
-              isAdvancedMenuOpen ? "scale-110 rotate-180" : "group-hover:rotate-90"
-            )}
-          />
-        </button>
-      </div>
+      <SidebarToggle isOpen={isAdvancedMenuOpen} onToggle={() => setAdvancedMenu((v) => !v)} />
 
-      <div
-        id="advanced-settings-menu"
-        className="border-border bg-surface overflow-hidden border-2"
-      >
+      <aside className="bg-surface border-border overflow-hidden border-l">
         <AdvancedSearchSettings updateSetting={updateSetting} settings={settings} />
-      </div>
+      </aside>
     </section>
+  );
+}
+
+function SidebarToggle({ isOpen, onToggle }) {
+  return (
+    <div className="relative flex flex-col items-center">
+      <div className="bg-border/50 absolute inset-y-0 left-0 w-px" />
+      <button
+        onClick={onToggle}
+        className={cn(
+          "relative z-10 flex flex-col items-center px-2 pt-4 pb-3",
+          "bg-primary/10 border-primary/20 border-x border-b",
+          "rounded-b-lg shadow-sm transition-all duration-300",
+          "hover:bg-primary/20 hover:border-primary/40 hover:pt-6",
+          "group"
+        )}
+        style={{ width: "42px" }}
+      >
+        <div className="bg-primary/40 absolute top-0 mb-2 h-5 w-1 rounded-b-full transition-all group-hover:h-6" />
+        <Cog8ToothIcon
+          className={cn(
+            "text-primary mt-2 size-6 transition-transform duration-500",
+            isOpen ? "scale-110 rotate-180" : "group-hover:rotate-90"
+          )}
+        />
+      </button>
+    </div>
   );
 }

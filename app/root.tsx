@@ -12,7 +12,6 @@ import "./app.css";
 
 // @ts-ignore
 import HeaderImport from "@components/layout/Header";
-import { SearchProvider } from "./context/SearchContext";
 import { FavoritesProvider } from "./context/FavoritesContext";
 import { Footer as FooterImport } from "@components/layout/Footer";
 
@@ -54,11 +53,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <SearchProvider>
-      <FavoritesProvider>
-        <Outlet />
-      </FavoritesProvider>
-    </SearchProvider>
+    <FavoritesProvider>
+      <Outlet />
+    </FavoritesProvider>
   );
 }
 
