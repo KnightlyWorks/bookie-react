@@ -24,7 +24,7 @@ export async function loader({ request }) {
 
   const googleParams = new URLSearchParams({ q: query, startIndex });
   Object.entries(settings).forEach(([key, value]) => {
-    if (!["q", "startIndex"].includes(key) && value && value !== "all") {
+    if (!["q", "startIndex"].includes(key) && value) {
       googleParams.append(key, value);
     }
   });
@@ -72,7 +72,7 @@ export default function SearchPage() {
     [searchParams, submit]
   );
 
-  const debouncedSubmit = useMemo(() => debounce(performSubmit, 500), [performSubmit]);
+  const debouncedSubmit = useMemo(() => debounce(performSubmit, 250), [performSubmit]);
 
   const handleSearchChange = useCallback(
     (skipDebounce = false) =>
@@ -91,11 +91,15 @@ export default function SearchPage() {
 
   const updateSetting = (key) => (value) => {
     const params = new URLSearchParams(searchParams);
-    if (!value || value === "all" || value === DEFAULT_SEARCH_SETTINGS[key]) {
+
+    const defaultValue = DEFAULT_SEARCH_SETTINGS[key];
+
+    if (value === defaultValue) {
       params.delete(key);
     } else {
       params.set(key, value);
     }
+
     params.delete("startIndex");
     submit(params, { preventScrollReset: true });
   };
