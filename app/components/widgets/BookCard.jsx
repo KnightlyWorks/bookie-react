@@ -7,9 +7,6 @@ import { useFavorites } from "@context/FavoritesContext";
 import { HeartIcon as HeartOutline } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
 
-// Utils
-import { cn } from "@utils/cn";
-
 export default function BookCard({ bookData }) {
   const { toggleFavorite, isFavorite } = useFavorites();
   const favorite = isFavorite(bookData.id);

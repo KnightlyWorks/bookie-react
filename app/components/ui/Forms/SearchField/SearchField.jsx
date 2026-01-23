@@ -1,6 +1,5 @@
 //SearchField.jsx
 import { useDebugValue } from "react";
-import { cn } from "@utils/cn";
 
 export default function SearchField({ query, onChange, onSearch }) {
   const handleKeyDown = (e) => {
@@ -11,12 +10,7 @@ export default function SearchField({ query, onChange, onSearch }) {
 
   return (
     <div className="w-full">
-      <div
-        className={cn(
-          "group bg-surface border-secondary relative flex items-center rounded-2xl border-2 p-2 transition-all duration-300",
-          "focus-within:border-primary focus-within:shadow-primary/20 focus-within:shadow-lg"
-        )}
-      >
+      <div className="group bg-surface border-secondary focus-within:border-primary focus-within:shadow-primary/20 relative flex items-center rounded-2xl border-2 p-2 transition-all duration-300 focus-within:shadow-lg">
         <input
           type="text"
           value={query}

@@ -62,10 +62,7 @@ export default function HoldButton({
       )}
     >
       <div
-        className={cn(
-          "bg-primary/5 pointer-events-none absolute inset-0",
-          "transition-all ease-out"
-        )}
+        className={"bg-primary/5 pointer-events-none absolute inset-0 transition-all ease-out"}
         style={{
           width: isHolding ? "100%" : "0%",
           transitionDuration: isHolding ? `${duration}ms` : "300ms",
