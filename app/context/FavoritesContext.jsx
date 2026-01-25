@@ -1,6 +1,7 @@
 // context/FavoritesContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
 import useDebounce from "@hooks/useDebounce";
+import { useFetcher } from "react-router";
 
 const FavoritesContext = createContext();
 
@@ -18,7 +19,6 @@ export function FavoritesProvider({ children }) {
   }, []);
 
   const debouncedFavorites = useDebounce(favorites, 300);
-
   useEffect(() => {
     if (Object.keys(debouncedFavorites).length === 0) {
       const checkExisting = localStorage.getItem("favorites");
