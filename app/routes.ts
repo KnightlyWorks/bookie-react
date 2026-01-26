@@ -5,6 +5,7 @@ export default [
   route("search", "routes/SearchPage.jsx"),
   route("favorite", "routes/Favorites.jsx"),
   route("register", "routes/RegisterPage.jsx"),
+  route("login", "routes/LoginPage.jsx"),
   route("/api/check-user", "routes/actions/check-user.js"),
   route("*", "routes/404.jsx"),
 ] satisfies RouteConfig;
