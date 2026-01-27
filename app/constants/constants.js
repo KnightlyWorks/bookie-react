@@ -51,3 +51,5 @@ export const SUPPORTED_LANGUAGES = [
   "uk",
   "vi",
 ];
+
+export const TOKEN_LIVE_TIME = 7200000

@@ -5,7 +5,6 @@ export async function clientLoader() {
   const isExpired = user?.expiresAt && Date.now() > user.expiresAt;
 
   if (!user || !user.isAuth || isExpired) {
-    localStorage.removeItem("user");
     throw redirect("/login");
   }
 

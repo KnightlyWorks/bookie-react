@@ -3,6 +3,8 @@ import { Form, Link, useActionData, useFetcher, useNavigation } from "react-rout
 import { validateField } from "@utils/auth-validation";
 
 import Field from "@components/ui/Forms/TextField";
+import { expiresIn } from "@utils/generateExpairsIn";
+import { TOKEN_LIVE_TIME } from "@constants/constants";
 export async function clientAction({ request }) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
@@ -13,7 +15,10 @@ export async function clientAction({ request }) {
     if (error) return { error, field };
   }
 
-  localStorage.setItem("user", JSON.stringify({ ...data, isAuth: true })); // oNLY mOCK
+  localStorage.setItem(
+    "user",
+    JSON.stringify({ ...data, isAuth: true, expiresAt: expiresIn(TOKEN_LIVE_TIME) })
+  ); // oNLY mOCK
   return { success: true };
 }
 

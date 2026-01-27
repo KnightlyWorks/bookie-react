@@ -9,6 +9,8 @@ import {
 } from "react-router";
 
 import Field from "@components/ui/Forms/TextField";
+import { expiresIn } from "@utils/generateExpairsIn";
+import { TOKEN_LIVE_TIME } from "@constants/constants";
 
 export async function clientAction({ request }) {
   const formData = await request.formData();
@@ -24,10 +26,9 @@ export async function clientAction({ request }) {
     return data({ error: "Incorrect login or password" }, { status: 401 });
   }
 
-  const expiresIn = Date.now() + 2 * 60 * 60 * 1000;
   localStorage.setItem(
     "user",
-    JSON.stringify({ ...existingUser, isAuth: true, expiresAt: expiresIn })
+    JSON.stringify({ ...existingUser, isAuth: true, expiresAt: expiresIn(TOKEN_LIVE_TIME) })
   );
   return redirect("/");
 }
@@ -86,15 +87,11 @@ export default function LoginPage() {
         <h1 className="text-text-primary text-4xl font-extrabold tracking-tight">
           You already logged in as <span className="text-accent">{user.login}</span>
         </h1>
-        <button
-          onClick={() => {
-            localStorage.removeItem("user");
-            window.location.href = "/login";
-          }}
-          className="btn-primary hover:bg-error transition-colors"
-        >
-          Logout from Account
-        </button>
+        <Form method="post" action="/api/logout">
+          <button className="btn-primary hover:bg-error transition-colors">
+            Logout from Account
+          </button>
+        </Form>
       </div>
     );
   }
