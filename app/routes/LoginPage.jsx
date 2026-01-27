@@ -1,12 +1,18 @@
-import { data, Form, Link, redirect, useActionData, useFetcher, useNavigation } from "react-router";
+import {
+  data,
+  Form,
+  redirect,
+  useActionData,
+  useFetcher,
+  useNavigation,
+  useRouteLoaderData,
+} from "react-router";
 
-import { validateField } from "@utils/auth-validation";
 import Field from "@components/ui/Forms/TextField";
 
 export async function clientAction({ request }) {
   const formData = await request.formData();
   const submission = Object.fromEntries(formData);
-
   const rawUser = localStorage.getItem("user");
   const existingUser = JSON.parse(rawUser ?? "null");
 
@@ -18,9 +24,11 @@ export async function clientAction({ request }) {
     return data({ error: "Incorrect login or password" }, { status: 401 });
   }
 
-  const updatedUser = { ...existingUser, isAuth: true };
-  localStorage.setItem("user", JSON.stringify(updatedUser));
-
+  const expiresIn = Date.now() + 2 * 60 * 60 * 1000;
+  localStorage.setItem(
+    "user",
+    JSON.stringify({ ...existingUser, isAuth: true, expiresAt: expiresIn })
+  );
   return redirect("/");
 }
 
@@ -66,4 +74,30 @@ function LoginForm() {
       </div>
     </Form>
   );
+}
+
+export default function LoginPage() {
+  const rootData = useRouteLoaderData("root");
+  const user = rootData?.user;
+
+  if (user) {
+    return (
+      <div className="flex flex-col items-center gap-6 py-20 text-center">
+        <h1 className="text-text-primary text-4xl font-extrabold tracking-tight">
+          You already logged in as <span className="text-accent">{user.login}</span>
+        </h1>
+        <button
+          onClick={() => {
+            localStorage.removeItem("user");
+            window.location.href = "/login";
+          }}
+          className="btn-primary hover:bg-error transition-colors"
+        >
+          Logout from Account
+        </button>
+      </div>
+    );
+  }
+
+  return <LoginForm />;
 }

@@ -5,6 +5,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -30,6 +31,12 @@ export const links: Route.LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
+export async function clientLoader() {
+  const user = JSON.parse(localStorage.getItem("user") ?? "null");
+  return {
+    user: user && user.isAuth && Date.now() < user.expiresAt ? user : null,
+  };
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -41,11 +48,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="mx-auto max-w-7xl">
-        <Header />
         {children}
-        <ScrollRestoration />
         <Scripts />
-        <Footer />
+        <ScrollRestoration />
       </body>
     </html>
   );
@@ -54,7 +59,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <FavoritesProvider>
+      <Header />
       <Outlet />
+      <Footer />
     </FavoritesProvider>
   );
 }
