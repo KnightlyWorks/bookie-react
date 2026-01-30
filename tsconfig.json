@@ -24,7 +24,8 @@
       "@utils/*": ["./app/utils/*"],
       "@context/*": ["./app/context/*"],
       "@constants/*": ["./app/constants/*"],
-      "@assets/*": ["./app/assets/*"]
+      "@assets/*": ["./app/assets/*"],
+      "@routes/*": ["./app/routes/*"]
     }
   },
   "exclude": ["node_modules"]

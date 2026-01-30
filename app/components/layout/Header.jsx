@@ -1,9 +1,9 @@
 // app/components/layout/Header.jsx
 import { useState } from "react";
 import { Link } from "react-router";
-import { cn } from "@utils/cn";
 import { useMediaQuery } from "react-responsive";
 import { tailwindBreakpoints } from "@constants/tailwindBreakpoints";
+import NavigateLinks from "@components/ui/Links/NavLinks";
 
 export default function Header() {
   const [isBurgerMenuOpen, setBurgerMenu] = useState(false);
@@ -68,43 +68,14 @@ export default function Header() {
 
               {/* Menu content */}
               <div className="flex h-full items-center justify-center">
-                <NavLinks onLinkClick={closeBurgerMenu} mobile />
+                <NavigateLinks className={"flex flex-col items-center gap-6"} />
               </div>
             </div>
           )}
         </div>
       ) : (
-        <div className="hidden md:block">
-          <NavLinks />
-        </div>
+        <NavigateLinks className="flex items-center gap-6" />
       )}
     </header>
-  );
-}
-
-function NavLinks({ onLinkClick, mobile = false }) {
-  const linkBase = "transition-colors hover:text-primary";
-
-  return (
-    <nav className={cn("flex items-center gap-6", mobile ? "flex-col" : "flex-row")}>
-      {/* 
-       TODO: in future, if will a lot of pages, add glob-like pattern here
-      */}
-      <Link
-        to="/search"
-        onClick={onLinkClick}
-        className={cn(linkBase, mobile ? "text-text-primary text-2xl" : "text-text-secondary")}
-      >
-        Search
-      </Link>
-
-      <Link
-        to="/favorite"
-        onClick={onLinkClick}
-        className={cn(linkBase, mobile ? "text-text-primary text-2xl" : "text-text-secondary")}
-      >
-        Favorites
-      </Link>
-    </nav>
   );
 }

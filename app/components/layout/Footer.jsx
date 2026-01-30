@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import projectLogo from "@assets/Logo.svg";
 import githubLogo from "@assets/GitHub_Invertocat_Black.svg";
 import ExternalLink from "@components/ui/Links/ExternalLink";
+import NavigateLinks from "@components/ui/Links/NavLinks";
 
 export function Footer() {
   return (
@@ -20,16 +21,9 @@ export function Footer() {
           {/* Links */}
           <div className="space-y-4">
             <h3 className="text-text-primary font-semibold">Navigation</h3>
-            <nav className="text-text-secondary flex flex-col gap-2 text-sm">
-              <Link to="/" className="hover:text-primary transition-colors">
-                Search
-              </Link>
-
-              <Link to="/favorite" className="hover:text-primary transition-colors">
-                Favorites
-              </Link>
-            </nav>{" "}
-            {/*When more pages add glob-like pattern */}
+            <NavigateLinks className="flex flex-col gap-2 text-sm" showCurrentRoute={false}>
+              <Link to="/">Home</Link>
+            </NavigateLinks>
           </div>
 
           {/* Attribution & Credits */}
